@@ -1,0 +1,1 @@
+SELECT * FROM biodata.students WHERE DATE(created_at) >= CURDATE();
