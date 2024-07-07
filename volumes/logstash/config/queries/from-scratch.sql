@@ -1,1 +1,1 @@
-SELECT * FROM biodata.students WHERE DATE(created_at) >= CURDATE();
+SELECT * FROM biodata.students s WHERE s.created_at < NOW() OR s.updated_at < NOW()
