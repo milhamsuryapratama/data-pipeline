@@ -8,6 +8,8 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.22
     container_name: elasticsearch
@@ -44,3 +46,23 @@ services:
       - ./volumes/logstash/pipeline/:/usr/share/logstash/pipeline/
       - ./volumes/logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml
       - ./volumes/logstash/config/queries/:/usr/share/logstash/config/queries/
+  golang_service:
+    container_name: golang
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - "PORT=8000"
+    ports:
+      - 8000:8000
+    command: [ "./main" ]
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.15.0
+    user: root
+    volumes:
+      - ./volumes/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - golang_service
+      - kibana

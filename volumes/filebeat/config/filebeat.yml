@@ -1,0 +1,8 @@
+logging.level: debug
+setup.kibana.host: 'http://kibana:5601'
+filebeat.inputs:
+  - type: docker
+    containers.ids:
+      - 'a2786dde15a9e26e8eb8bf7c24464039fc7a443a0441d94452bf070d43964f16'
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
