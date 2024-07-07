@@ -1,0 +1,17 @@
+logging.level: debug
+setup.kibana.host: 'http://kibana:5601'
+filebeat.inputs:
+  - type: container
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
+    processors:
+      - add_docker_metadata:
+          match_fields: [ "container.id" ]
+          match_pids: [ "process.pid" ]
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: golang
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
